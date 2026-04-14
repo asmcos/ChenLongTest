@@ -62,7 +62,7 @@
 | 54 | `test_dmesg.py` | `busybox_dmesg` | `busybox dmesg -h 2>&1`，校验 `Usage` |
 | 55 | `test_dnsdomainname.py` | `busybox_dnsdomainname` | `busybox dnsdomainname -h 2>&1`，校验 `Usage` |
 | 56 | `test_dos2unix.py` | `busybox_dos2unix` | `busybox dos2unix -h 2>&1`，校验 `Usage` |
-| 57 | `test_du.py` | `busybox_du` | `busybox du -s / 2>&1`（仅要求非空；`timeout` 3s） |
+| 57 | `test_du.py` | `busybox_du` | `mkdir /tmp/bb_du` 后 `du -s /tmp/bb_du`（仅要求非空；勿扫 `/`） |
 | 58 | `test_dumpkmap.py` | `busybox_dumpkmap` | `busybox dumpkmap -h 2>&1`，校验 `Usage` |
 | 59 | `test_echo.py` | `busybox_echo` | `busybox echo echo_ok 2>&1`，校验 `echo_ok` |
 | 60 | `test_egrep.py` | `busybox_egrep` | `echo hello \| egrep hell`，校验输出含 `hello` |
