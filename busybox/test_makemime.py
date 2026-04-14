@@ -3,8 +3,8 @@
 TEST = {
     "order": 144,
     "name": "busybox_makemime",
-    "cmd": "busybox makemime 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox makemime -h 2>&1",
+    "expected_substring": "Usage: makemime",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

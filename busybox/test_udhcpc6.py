@@ -4,7 +4,7 @@ TEST = {
     "order": 271,
     "name": "busybox_udhcpc6",
     "cmd": "busybox udhcpc6 -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: udhcpc6",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

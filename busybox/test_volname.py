@@ -3,8 +3,8 @@
 TEST = {
     "order": 290,
     "name": "busybox_volname",
-    "cmd": "busybox volname /dev/null 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox volname /dev/null 2>&1; busybox echo volname_ok",
+    "expected_substring": "volname_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

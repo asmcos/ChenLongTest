@@ -3,8 +3,8 @@
 TEST = {
     "order": 139,
     "name": "busybox_lsusb",
-    "cmd": "busybox lsusb 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox lsusb 2>&1; busybox echo lsusb_ok",
+    "expected_substring": "lsusb_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

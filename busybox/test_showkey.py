@@ -4,7 +4,7 @@ TEST = {
     "order": 234,
     "name": "busybox_showkey",
     "cmd": "busybox showkey -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: showkey",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

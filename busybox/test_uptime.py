@@ -3,8 +3,8 @@
 TEST = {
     "order": 283,
     "name": "busybox_uptime",
-    "cmd": "busybox uptime 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox uptime 2>&1; busybox echo uptime_ok",
+    "expected_substring": "uptime_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

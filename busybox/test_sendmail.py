@@ -4,7 +4,7 @@ TEST = {
     "order": 220,
     "name": "busybox_sendmail",
     "cmd": "busybox sendmail -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: sendmail",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

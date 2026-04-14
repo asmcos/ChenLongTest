@@ -4,7 +4,7 @@ TEST = {
     "order": 166,
     "name": "busybox_nandwrite",
     "cmd": "busybox nandwrite -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: nandwrite",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

@@ -3,8 +3,8 @@
 TEST = {
     "order": 196,
     "name": "busybox_pscan",
-    "cmd": "busybox pscan 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox pscan -h 2>&1",
+    "expected_substring": "Usage: pscan",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

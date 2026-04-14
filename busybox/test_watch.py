@@ -4,7 +4,7 @@ TEST = {
     "order": 291,
     "name": "busybox_watch",
     "cmd": "busybox watch -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: watch",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

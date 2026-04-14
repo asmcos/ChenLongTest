@@ -4,7 +4,7 @@ TEST = {
     "order": 227,
     "name": "busybox_setserial",
     "cmd": "busybox setserial -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: setserial",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

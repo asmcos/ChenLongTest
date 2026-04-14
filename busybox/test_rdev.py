@@ -3,8 +3,8 @@
 TEST = {
     "order": 202,
     "name": "busybox_rdev",
-    "cmd": "busybox rdev 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox rdev -h 2>&1",
+    "expected_substring": "Usage: rdev",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

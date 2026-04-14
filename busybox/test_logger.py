@@ -4,7 +4,7 @@ TEST = {
     "order": 131,
     "name": "busybox_logger",
     "cmd": "busybox logger -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: logger",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

@@ -4,7 +4,7 @@ TEST = {
     "order": 182,
     "name": "busybox_passwd",
     "cmd": "busybox passwd -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: passwd",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

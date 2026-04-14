@@ -3,8 +3,8 @@
 TEST = {
     "order": 147,
     "name": "busybox_mesg",
-    "cmd": "busybox mesg 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox mesg 2>&1; busybox echo mesg_ok",
+    "expected_substring": "mesg_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

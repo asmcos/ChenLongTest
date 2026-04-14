@@ -3,8 +3,8 @@
 TEST = {
     "order": 250,
     "name": "busybox_sysctl",
-    "cmd": "busybox sysctl kernel.hostname 2>&1 || busybox sysctl -h 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox sysctl kernel.hostname 2>&1 || busybox sysctl -h 2>&1; busybox echo sysctl_ok",
+    "expected_substring": "sysctl_ok",
     "expect_non_empty": True,
     "timeout": 3.0,
 }

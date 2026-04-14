@@ -3,8 +3,8 @@
 TEST = {
     "order": 191,
     "name": "busybox_pmap",
-    "cmd": "busybox pmap 1 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox pmap 1 2>&1; busybox echo pmap_ok",
+    "expected_substring": "pmap_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

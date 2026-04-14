@@ -3,8 +3,8 @@
 TEST = {
     "order": 209,
     "name": "busybox_renice",
-    "cmd": "busybox sh -c 'busybox renice +0 -p $$' 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox sh -c 'busybox renice +0 -p $$; busybox echo renice_ok' 2>&1",
+    "expected_substring": "renice_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

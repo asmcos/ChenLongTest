@@ -3,8 +3,8 @@
 TEST = {
     "order": 184,
     "name": "busybox_pgrep",
-    "cmd": "busybox pgrep -l init 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox pgrep -h 2>&1",
+    "expected_substring": "Usage: pgrep",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

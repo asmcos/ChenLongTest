@@ -3,8 +3,8 @@
 TEST = {
     "order": 181,
     "name": "busybox_partprobe",
-    "cmd": "busybox partprobe 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox partprobe -h 2>&1",
+    "expected_substring": "Usage: partprobe",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

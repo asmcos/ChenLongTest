@@ -3,8 +3,8 @@
 TEST = {
     "order": 136,
     "name": "busybox_lsattr",
-    "cmd": "busybox lsattr -d /tmp 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox lsattr -d /tmp 2>&1; busybox echo lsattr_ok",
+    "expected_substring": "lsattr_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

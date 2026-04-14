@@ -3,8 +3,8 @@
 TEST = {
     "order": 164,
     "name": "busybox_nameif",
-    "cmd": "busybox nameif 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox nameif -h 2>&1",
+    "expected_substring": "Usage: nameif",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

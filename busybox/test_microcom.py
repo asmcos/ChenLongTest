@@ -3,8 +3,8 @@
 TEST = {
     "order": 148,
     "name": "busybox_microcom",
-    "cmd": "busybox microcom 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox microcom -h 2>&1",
+    "expected_substring": "Usage: microcom",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

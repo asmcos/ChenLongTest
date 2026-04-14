@@ -4,7 +4,7 @@ TEST = {
     "order": 161,
     "name": "busybox_mountpoint",
     "cmd": "busybox mountpoint / 2>&1",
-    "expected_substring": None,
+    "expected_substring": "is a mountpoint",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

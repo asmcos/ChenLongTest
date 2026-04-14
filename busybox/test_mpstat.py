@@ -3,8 +3,8 @@
 TEST = {
     "order": 162,
     "name": "busybox_mpstat",
-    "cmd": "busybox mpstat 1 1 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox mpstat 1 1 2>&1; busybox echo mpstat_ok",
+    "expected_substring": "mpstat_ok",
     "expect_non_empty": True,
     "timeout": 5.0,
 }

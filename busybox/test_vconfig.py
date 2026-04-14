@@ -4,7 +4,7 @@ TEST = {
     "order": 287,
     "name": "busybox_vconfig",
     "cmd": "busybox vconfig -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: vconfig",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

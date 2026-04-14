@@ -4,7 +4,7 @@ TEST = {
     "order": 237,
     "name": "busybox_slattach",
     "cmd": "busybox slattach -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: slattach",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

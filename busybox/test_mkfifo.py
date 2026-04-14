@@ -6,5 +6,6 @@ TEST = {
     "cmd": "busybox rm -f /tmp/bb_fifo_t && busybox mkfifo /tmp/bb_fifo_t && busybox ls -l /tmp/bb_fifo_t 2>&1",
     "expected_substring": "bb_fifo_t",
     "expect_non_empty": True,
+    "clean": "busybox rm -f /tmp/bb_fifo_t",
     "timeout": 2.0,
 }

@@ -4,7 +4,7 @@ TEST = {
     "order": 272,
     "name": "busybox_umount",
     "cmd": "busybox umount -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: umount",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

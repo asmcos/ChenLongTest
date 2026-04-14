@@ -4,7 +4,7 @@ TEST = {
     "order": 192,
     "name": "busybox_poweroff",
     "cmd": "busybox poweroff -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: poweroff",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

@@ -6,5 +6,6 @@ TEST = {
     "cmd": "busybox sh -c 'busybox echo tee_line | busybox tee /tmp/bb_tee_f >/dev/null && busybox cat /tmp/bb_tee_f' 2>&1",
     "expected_substring": "tee_line",
     "expect_non_empty": True,
+    "clean": "busybox rm -f /tmp/bb_tee_f",
     "timeout": 2.0,
 }

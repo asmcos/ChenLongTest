@@ -4,7 +4,7 @@ TEST = {
     "order": 262,
     "name": "busybox_traceroute",
     "cmd": "busybox traceroute -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: traceroute",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

@@ -3,8 +3,8 @@
 TEST = {
     "order": 200,
     "name": "busybox_raidautorun",
-    "cmd": "busybox raidautorun 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox raidautorun -h 2>&1",
+    "expected_substring": "Usage: raidautorun",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

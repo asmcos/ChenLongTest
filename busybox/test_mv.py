@@ -6,5 +6,6 @@ TEST = {
     "cmd": "busybox echo mv_ok > /tmp/bb_mv_from && busybox mv /tmp/bb_mv_from /tmp/bb_mv_to && busybox cat /tmp/bb_mv_to 2>&1",
     "expected_substring": "mv_ok",
     "expect_non_empty": True,
+    "clean": "busybox rm -f /tmp/bb_mv_from /tmp/bb_mv_to",
     "timeout": 2.0,
 }

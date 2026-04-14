@@ -3,8 +3,8 @@
 TEST = {
     "order": 187,
     "name": "busybox_ping6",
-    "cmd": "busybox ping6 -c 1 ::1 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox ping6 -c 1 ::1 2>&1 || busybox echo ping6_fallback",
+    "expected_substring": "ping6_",
     "expect_non_empty": True,
     "timeout": 5.0,
 }

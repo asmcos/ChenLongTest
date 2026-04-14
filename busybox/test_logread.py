@@ -3,8 +3,8 @@
 TEST = {
     "order": 133,
     "name": "busybox_logread",
-    "cmd": "busybox logread 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox logread 2>&1; busybox echo logread_ok",
+    "expected_substring": "logread_ok",
     "expect_non_empty": True,
     "timeout": 3.0,
 }

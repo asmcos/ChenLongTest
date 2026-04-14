@@ -3,8 +3,8 @@
 TEST = {
     "order": 208,
     "name": "busybox_remove_shell",
-    "cmd": "busybox remove-shell 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox remove-shell -h 2>&1",
+    "expected_substring": "Usage: remove-shell",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

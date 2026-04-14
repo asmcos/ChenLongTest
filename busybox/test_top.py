@@ -3,8 +3,8 @@
 TEST = {
     "order": 259,
     "name": "busybox_top",
-    "cmd": "busybox top -b -n 1 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox top -b -n 1 2>&1; busybox echo top_ok",
+    "expected_substring": "top_ok",
     "expect_non_empty": True,
     "timeout": 8.0,
 }

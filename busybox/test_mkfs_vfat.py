@@ -4,7 +4,7 @@ TEST = {
     "order": 152,
     "name": "busybox_mkfs_vfat",
     "cmd": "busybox mkfs.vfat -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: mkfs.vfat",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

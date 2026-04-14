@@ -6,5 +6,6 @@ TEST = {
     "cmd": "busybox sh -c 'busybox mkdir -p /tmp/bb_tree/d && busybox echo x > /tmp/bb_tree/d/a && busybox tree /tmp/bb_tree 2>&1'",
     "expected_substring": "a",
     "expect_non_empty": True,
+    "clean": "busybox rm -rf /tmp/bb_tree",
     "timeout": 3.0,
 }

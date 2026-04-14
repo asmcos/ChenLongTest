@@ -3,8 +3,8 @@
 TEST = {
     "order": 243,
     "name": "busybox_stty",
-    "cmd": "busybox stty -a 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox stty -a 2>&1; busybox echo stty_ok",
+    "expected_substring": "stty_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

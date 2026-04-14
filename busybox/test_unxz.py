@@ -4,7 +4,7 @@ TEST = {
     "order": 281,
     "name": "busybox_unxz",
     "cmd": "busybox unxz -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: unxz",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

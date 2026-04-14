@@ -3,8 +3,8 @@
 TEST = {
     "order": 190,
     "name": "busybox_pkill",
-    "cmd": "busybox pkill -h 2>&1",
-    "expected_substring": "Usage",
+    "cmd": "busybox pkill -l 2>&1",
+    "expected_substring": "HUP",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

@@ -4,7 +4,7 @@ TEST = {
     "order": 180,
     "name": "busybox_openvt",
     "cmd": "busybox openvt -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: openvt",
     "expect_non_empty": True,
     "timeout": 2.0,
 }
