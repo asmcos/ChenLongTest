@@ -4,7 +4,7 @@ TEST = {
     "order": 13,
     "name": "busybox_base64",
     "cmd": "busybox echo test | busybox base64 2>&1",
-    "expected_substring": None,
+    "expected_substring": "dGVzdAo=",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

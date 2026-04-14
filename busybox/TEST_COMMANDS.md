@@ -13,18 +13,18 @@
 | 5 | `test_adjtimex.py` | `busybox_adjtimex` | `busybox adjtimex 2>&1`（仅要求非空） |
 | 6 | `test_busybox_list.py` | `busybox_list` | `busybox --list`（仅要求非空） |
 | 7 | `test_ls.py` | `ls_root` | `ls /`，校验输出含 `bin` |
-| 8 | `test_arch.py` | `busybox_arch` | `busybox arch 2>&1`（仅要求非空） |
-| 9 | `test_arp.py` | `busybox_arp` | `busybox arp 2>&1`（仅要求非空） |
-| 10 | `test_arping.py` | `busybox_arping` | `busybox arping 2>&1`（仅要求非空） |
+| 8 | `test_arch.py` | `busybox_arch` | `busybox arch`，校验含 `riscv` |
+| 9 | `test_arp.py` | `busybox_arp` | `busybox arp`，校验错误含 `/proc/net/arp` |
+| 10 | `test_arping.py` | `busybox_arping` | `busybox arping`，校验含 `Address family not supported` |
 | 11 | `test_ash.py` | `busybox_ash` | `busybox ash -c 'echo ash_ok' 2>&1`，校验 `ash_ok`（避免无参进入交互 shell） |
 | 12 | `test_awk.py` | `busybox_awk` | `busybox awk 'BEGIN{print "awk_ok"}' 2>&1`，校验 `awk_ok` |
-| 13 | `test_base64.py` | `busybox_base64` | `busybox echo test \| busybox base64 2>&1`（仅要求非空） |
+| 13 | `test_base64.py` | `busybox_base64` | `echo test \| base64`，校验 `dGVzdAo=` |
 | 14 | `test_basename.py` | `busybox_basename` | `busybox basename /usr/bin/foo 2>&1`，校验 `foo` |
-| 15 | `test_bbconfig.py` | `busybox_bbconfig` | `busybox bbconfig 2>&1`（仅要求非空） |
+| 15 | `test_bbconfig.py` | `busybox_bbconfig` | `bbconfig`，校验 `CONFIG_BUSYBOX=y` |
 | 16 | `test_bc.py` | `busybox_bc` | `busybox echo '2+2' \| busybox bc 2>&1`，校验输出含 `4` |
-| 17 | `test_beep.py` | `busybox_beep` | `busybox beep 2>&1`（仅要求非空） |
-| 18 | `test_blkdiscard.py` | `busybox_blkdiscard` | `busybox blkdiscard 2>&1`（仅要求非空；无设备时多为用法/错误信息） |
-| 19 | `test_blkid.py` | `busybox_blkid` | `busybox blkid -h 2>&1`，校验 `Usage` |
+| 17 | `test_beep.py` | `busybox_beep` | `beep`，校验错误含 `can't open console` |
+| 18 | `test_blkdiscard.py` | `busybox_blkdiscard` | `blkdiscard` 无参，校验 `Usage: blkdiscard` |
+| 19 | `test_blkid.py` | `busybox_blkid` | `blkid /dev/null`，校验输出含 `/dev/null` |
 | 20 | `test_blockdev.py` | `busybox_blockdev` | `busybox blockdev -h 2>&1`，校验 `Usage` |
 | 21 | `test_brctl.py` | `busybox_brctl` | `busybox brctl -h 2>&1`，校验 `Usage` |
 | 22 | `test_bunzip2.py` | `busybox_bunzip2` | `busybox bunzip2 -h 2>&1`，校验 `Usage` |

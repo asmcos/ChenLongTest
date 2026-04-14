@@ -4,7 +4,7 @@ TEST = {
     "order": 18,
     "name": "busybox_blkdiscard",
     "cmd": "busybox blkdiscard 2>&1",
-    "expected_substring": None,
+    "expected_substring": "Usage: blkdiscard",
     "expect_non_empty": True,
     "timeout": 2.0,
 }
