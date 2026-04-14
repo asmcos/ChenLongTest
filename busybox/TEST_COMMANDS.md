@@ -134,8 +134,8 @@
 | 126 | `test_linux32.py` | `busybox_linux32` | `linux32 busybox echo …`，有输出即可 |
 | 127 | `test_linux64.py` | `busybox_linux64` | `linux64 busybox echo linux64_ok` |
 | 128 | `test_ln.py` | `busybox_ln` | `ln -s` + `readlink` |
-| 129 | `test_loadfont.py` | `busybox_loadfont` | `loadfont` 无参 |
-| 130 | `test_loadkmap.py` | `busybox_loadkmap` | `loadkmap` 无参 |
+| 129 | `test_loadfont.py` | `busybox_loadfont` | **`loadfont -h`**（无参易阻塞读 stdin） |
+| 130 | `test_loadkmap.py` | `busybox_loadkmap` | **`loadkmap -h`**（无参易阻塞读 stdin） |
 | 131 | `test_logger.py` | `busybox_logger` | **`logger -h`**，校验 `Usage` |
 | 132 | `test_login.py` | `busybox_login` | **`login -h`**，校验 `Usage` |
 | 133 | `test_logread.py` | `busybox_logread` | `logread`（可能空） |

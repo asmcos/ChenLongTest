@@ -1,10 +1,10 @@
-# loadfont：无字体文件时多为错误
+# loadfont：无参会从 stdin 读字体数据，易长时间阻塞 shell；改为仅校验帮助
 
 TEST = {
     "order": 129,
     "name": "busybox_loadfont",
-    "cmd": "busybox loadfont 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox loadfont -h 2>&1",
+    "expected_substring": "Usage",
     "expect_non_empty": True,
-    "timeout": 2.0,
+    "timeout": 3.0,
 }
