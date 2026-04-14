@@ -6,11 +6,13 @@ StarryOS 自动化测试脚本
 控制台 INFO/ERROR 与之一并写入同目录 run.log（总汇报）。
 """
 
+import argparse
 import logging
 import os
+import sys
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from harness import CustomTest, QemuSerialClient, TestCase, safe_filename
 
@@ -59,17 +61,48 @@ def test_case_from_spec(spec: Dict[str, Any]) -> TestCase:
     )
 
 
-def load_test_suite() -> List[Runnable]:
-    """动态发现并加载 busybox/ 下各 test_*.py：有 run() 走定制，否则走默认 TestCase。"""
+def load_test_suite(
+    name: Optional[str] = None,
+    order: Optional[int] = None,
+) -> List[Runnable]:
+    """
+    动态发现并加载 busybox/ 下各 test_*.py：有 run() 走定制，否则走默认 TestCase。
+    name / order 二选一或同时指定（同时指定时须同一用例同时满足）；均为 None 时跑全部。
+    """
     from busybox import discover_loaded_tests
 
     suite: List[Runnable] = []
     for spec, run_fn in discover_loaded_tests():
+        if name is not None and spec.get("name") != name:
+            continue
+        if order is not None and int(spec.get("order", -1)) != order:
+            continue
         if run_fn is not None:
             suite.append(CustomTest(spec, run_fn))
         else:
             suite.append(test_case_from_spec(spec))
     return suite
+
+
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    p = argparse.ArgumentParser(
+        description="StarryOS BusyBox 串口自动化测试（默认跑全部用例）",
+    )
+    p.add_argument(
+        "-t",
+        "--test",
+        metavar="NAME",
+        dest="test_name",
+        help="只跑一个用例：与 TEST 字典中 name 一致，例如 busybox_du",
+    )
+    p.add_argument(
+        "--order",
+        type=int,
+        metavar="N",
+        dest="order",
+        help="只跑一个用例：与 TEST 字典中 order 一致，例如 57",
+    )
+    return p.parse_args(argv)
 
 
 def save_output_to_file(cmd: str, output: str, test_name: str, session_dir: str) -> str:
@@ -105,7 +138,8 @@ def run_tests(client: QemuSerialClient, tests: List[Runnable], session_dir: str)
     logger.info(f"Test summary: {passed} passed, {failed} failed, total {len(tests)}")
 
 
-def main():
+def main(argv: Optional[List[str]] = None) -> None:
+    args = parse_args(argv)
     session_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     session_dir = os.path.join(LOG_DIR, session_ts)
     os.makedirs(session_dir, exist_ok=True)
@@ -113,7 +147,21 @@ def main():
     logger.info(f"Session log directory: {session_dir}")
     logger.info(f"Console mirror / full report: {report_path}")
 
-    suite = load_test_suite()
+    suite = load_test_suite(
+        name=args.test_name,
+        order=args.order,
+    )
+    if args.test_name is not None or args.order is not None:
+        if not suite:
+            logger.error(
+                "No test matches the filter (--test / --order). "
+                "Check busybox/test_*.py TEST['name'] and TEST['order']."
+            )
+            _detach_session_report_log(report_fh)
+            sys.exit(1)
+        logger.info(
+            f"Single-test mode: name={args.test_name!r} order={args.order!r} -> {len(suite)} case(s)"
+        )
     if not suite:
         logger.warning("No tests discovered under busybox/; add busybox/test_*.py with TEST dict.")
     client = QemuSerialClient(host=SERIAL_HOST, port=4444, timeout=1.0)

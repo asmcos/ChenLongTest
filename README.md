@@ -22,8 +22,34 @@ qemu-system-riscv64 -m 1G -smp 1 -machine virt -bios default \
 
 ## 自动化测试脚本
 
+### 跑全部用例（默认）
+
 ```bash
 python3 main.py
 ```
 
-日志默认写入项目下的 `logs/` 目录。
+日志默认写入项目下的 `logs/<时间戳>/`：每个用例一份串口输出 `.log`，同目录 `run.log` 为控制台镜像（总汇报）。
+
+### 只跑单个用例
+
+按 **`TEST` 字典里的 `name`**（与 `run.log` 里 `Running test: <name>` 一致）：
+
+```bash
+python3 main.py --test busybox_du
+# 简写
+python3 main.py -t busybox_du
+```
+
+按 **`order`**（与 `busybox/TEST_COMMANDS.md` 或各 `test_*.py` 中 `order` 一致）：
+
+```bash
+python3 main.py --order 57
+```
+
+可同时指定 `--test` 与 `--order`，仅当**同一条**用例两个条件都满足时才会执行（通常用于核对名称与序号是否一致）。若筛选结果为空，脚本会报错退出（不连串口）。
+
+查看全部已加载用例的 `order` 与 `name`，可在项目根执行：
+
+```bash
+python3 -c 'from busybox import discover_loaded_tests as d; print("\n".join("%s  %s" % (s["order"], s["name"]) for s,_ in d()))'
+```
