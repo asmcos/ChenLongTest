@@ -31,15 +31,28 @@ TEST = {
 def run(client: QemuSerialClient) -> Tuple[bool, str, str]:
     u = _USER
     chunks: list[str] = []
+    ok = False
+    msg = ""
+    try:
+        client.send_cmd(f"busybox deluser {u} 2>&1", timeout=2.0)
 
-    client.send_cmd(f"busybox deluser {u} 2>&1", timeout=2.0)
+        out = client.send_cmd(f"busybox adduser -D -H {u} 2>&1", timeout=3.0)
+        chunks.append("=== busybox adduser -D -H ===\n" + out)
 
-    out = client.send_cmd(f"busybox adduser -D -H {u} 2>&1", timeout=3.0)
-    chunks.append("=== busybox adduser -D -H ===\n" + out)
+        verify = client.send_cmd(f"busybox grep -F '{u}:' /etc/passwd 2>&1", timeout=2.0)
+        chunks.append("=== grep /etc/passwd ===\n" + verify)
 
-    verify = client.send_cmd(f"busybox grep -F '{u}:' /etc/passwd 2>&1", timeout=2.0)
-    chunks.append("=== grep /etc/passwd ===\n" + verify)
-
-    ok = bool(verify.strip()) and (f"{u}:" in verify)
-    msg = f"passwd line present for {u}" if ok else f"no line for {u}, got: {verify[:200]!r}"
+        ok = bool(verify.strip()) and (f"{u}:" in verify)
+        msg = f"passwd line present for {u}" if ok else f"no line for {u}, got: {verify[:200]!r}"
+    finally:
+        try:
+            cleanup_user = client.send_cmd(f"busybox deluser {u} 2>&1", timeout=2.0)
+            chunks.append("=== cleanup deluser ===\n" + cleanup_user)
+        except Exception as e:
+            chunks.append(f"=== cleanup deluser exception ===\n{e}")
+        try:
+            cleanup_group = client.send_cmd(f"busybox delgroup {u} 2>&1", timeout=2.0)
+            chunks.append("=== cleanup delgroup ===\n" + cleanup_group)
+        except Exception as e:
+            chunks.append(f"=== cleanup delgroup exception ===\n{e}")
     return ok, msg, "\n\n".join(chunks)

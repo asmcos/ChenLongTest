@@ -58,6 +58,7 @@ def test_case_from_spec(spec: Dict[str, Any]) -> TestCase:
         expected_substring=spec.get("expected_substring"),
         expect_non_empty=bool(spec.get("expect_non_empty", True)),
         timeout=float(spec.get("timeout", 2.0)),
+        clean=spec.get("clean"),
     )
 
 
@@ -119,9 +120,22 @@ def save_output_to_file(cmd: str, output: str, test_name: str, session_dir: str)
     return filepath
 
 
+def run_test_cleanup(client: QemuSerialClient, test: Runnable) -> None:
+    """执行单测自带 clean 命令；失败只记 warning，不影响主流程。"""
+    clean_cmd = getattr(test, "clean", None)
+    if not clean_cmd:
+        return
+    try:
+        client.send_cmd(clean_cmd, timeout=2.0)
+        logger.info(f"Cleanup done: {test.name} -> {clean_cmd}")
+    except Exception as e:
+        logger.warning(f"Cleanup failed for {test.name}: {e}")
+
+
 def run_tests(client: QemuSerialClient, tests: List[Runnable], session_dir: str) -> None:
     """运行测试套件；会话目录已存在，每个命令输出保存为该目录下的单独文件。"""
     logger.info(f"Starting {len(tests)} tests...")
+    logger.info("Cleanup policy: run per-test TEST['clean'] if provided")
     passed = 0
     failed = 0
     for test in tests:
@@ -134,6 +148,7 @@ def run_tests(client: QemuSerialClient, tests: List[Runnable], session_dir: str)
         else:
             logger.error(f"❌ FAIL: {test.name} - {msg}")
             failed += 1
+        run_test_cleanup(client, test)
         time.sleep(0.3)
     logger.info(f"Test summary: {passed} passed, {failed} failed, total {len(tests)}")
 

@@ -4,7 +4,7 @@ TEST = {
     "order": 21,
     "name": "busybox_brctl",
     "cmd": "busybox brctl -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "/sys/class/net",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

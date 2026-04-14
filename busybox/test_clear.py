@@ -3,8 +3,8 @@
 TEST = {
     "order": 35,
     "name": "busybox_clear",
-    "cmd": "busybox clear -h 2>&1",
-    "expected_substring": "Usage",
+    "cmd": "busybox clear 2>&1; busybox echo clear_ok 2>&1",
+    "expected_substring": "clear_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

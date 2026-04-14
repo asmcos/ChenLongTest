@@ -151,12 +151,14 @@ class TestCase:
         expected_substring: Optional[str] = None,
         expect_non_empty: bool = True,
         timeout: float = 2.0,
+        clean: Optional[str] = None,
     ):
         self.name = name
         self.cmd = cmd
         self.expected_substring = expected_substring
         self.expect_non_empty = expect_non_empty
         self.timeout = timeout
+        self.clean = clean
 
     def run(self, client: QemuSerialClient) -> Tuple[bool, str, str]:
         try:
@@ -190,6 +192,7 @@ class CustomTest:
         self.run_fn = run_fn
         self.name = spec["name"]
         self.cmd = spec.get("cmd", f"[custom] {self.name}")
+        self.clean = spec.get("clean")
 
     def run(self, client: QemuSerialClient) -> Tuple[bool, str, str]:
         return self.run_fn(client)

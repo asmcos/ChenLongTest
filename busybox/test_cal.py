@@ -4,7 +4,7 @@ TEST = {
     "order": 25,
     "name": "busybox_cal",
     "cmd": "busybox cal 2>&1",
-    "expected_substring": None,
+    "expected_substring": "Su Mo Tu We Th Fr Sa",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

@@ -26,15 +26,23 @@ TEST = {
 def run(client: QemuSerialClient) -> Tuple[bool, str, str]:
     g = _GROUP
     chunks: list[str] = []
+    ok = False
+    msg = ""
+    try:
+        client.send_cmd(f"busybox delgroup {g} 2>&1", timeout=2.0)
 
-    client.send_cmd(f"busybox delgroup {g} 2>&1", timeout=2.0)
+        out = client.send_cmd(f"busybox addgroup {g} 2>&1", timeout=3.0)
+        chunks.append("=== busybox addgroup ===\n" + out)
 
-    out = client.send_cmd(f"busybox addgroup {g} 2>&1", timeout=3.0)
-    chunks.append("=== busybox addgroup ===\n" + out)
+        verify = client.send_cmd(f"busybox grep -F '{g}:' /etc/group 2>&1", timeout=2.0)
+        chunks.append("=== grep /etc/group ===\n" + verify)
 
-    verify = client.send_cmd(f"busybox grep -F '{g}:' /etc/group 2>&1", timeout=2.0)
-    chunks.append("=== grep /etc/group ===\n" + verify)
-
-    ok = bool(verify.strip()) and (f"{g}:" in verify)
-    msg = f"group line present for {g}" if ok else f"no line for {g}, got: {verify[:200]!r}"
+        ok = bool(verify.strip()) and (f"{g}:" in verify)
+        msg = f"group line present for {g}" if ok else f"no line for {g}, got: {verify[:200]!r}"
+    finally:
+        try:
+            cleanup = client.send_cmd(f"busybox delgroup {g} 2>&1", timeout=2.0)
+            chunks.append("=== cleanup delgroup ===\n" + cleanup)
+        except Exception as e:
+            chunks.append(f"=== cleanup delgroup exception ===\n{e}")
     return ok, msg, "\n\n".join(chunks)

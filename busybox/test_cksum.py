@@ -3,8 +3,8 @@
 TEST = {
     "order": 34,
     "name": "busybox_cksum",
-    "cmd": "busybox cksum /proc/version 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox cksum /etc/passwd 2>&1",
+    "expected_substring": "/etc/passwd",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

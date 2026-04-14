@@ -30,6 +30,22 @@ python3 main.py
 
 日志默认写入项目下的 `logs/<时间戳>/`：每个用例一份串口输出 `.log`，同目录 `run.log` 为控制台镜像（总汇报）。
 
+推荐在 `TEST` 字典中按需提供 `clean` 字段，让每条用例自行清理临时产物。例如：
+
+```python
+TEST = {
+    "order": 38,
+    "name": "busybox_cp",
+    "cmd": "busybox sh -c '...创建并验证...'",
+    "clean": "busybox sh -c 'busybox rm -f /tmp/xxx /tmp/yyy' 2>&1",
+    "expected_substring": "cp_ok",
+    "expect_non_empty": True,
+    "timeout": 4.0,
+}
+```
+
+框架会在该用例执行完成后自动执行 `clean`（无论 PASS/FAIL），清理失败只记 warning，不中断主流程。
+
 ### 只跑单个用例
 
 按 **`TEST` 字典里的 `name`**（与 `run.log` 里 `Running test: <name>` 一致）：

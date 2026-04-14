@@ -3,8 +3,8 @@
 TEST = {
     "order": 32,
     "name": "busybox_chroot",
-    "cmd": "busybox chroot -h 2>&1",
-    "expected_substring": "Usage",
+    "cmd": "busybox chroot / /bin/busybox echo chroot_ok 2>&1",
+    "expected_substring": "chroot_ok",
     "expect_non_empty": True,
-    "timeout": 2.0,
+    "timeout": 3.0,
 }

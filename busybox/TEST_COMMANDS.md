@@ -26,26 +26,26 @@
 | 18 | `test_blkdiscard.py` | `busybox_blkdiscard` | `blkdiscard` 无参，校验 `Usage: blkdiscard` |
 | 19 | `test_blkid.py` | `busybox_blkid` | `blkid /dev/null`，校验输出含 `/dev/null` |
 | 20 | `test_blockdev.py` | `busybox_blockdev` | `busybox blockdev -h 2>&1`，校验 `Usage` |
-| 21 | `test_brctl.py` | `busybox_brctl` | `busybox brctl -h 2>&1`，校验 `Usage` |
-| 22 | `test_bunzip2.py` | `busybox_bunzip2` | `busybox bunzip2 -h 2>&1`，校验 `Usage` |
-| 23 | `test_bzcat.py` | `busybox_bzcat` | `busybox bzcat -h 2>&1`，校验 `Usage` |
-| 24 | `test_bzip2.py` | `busybox_bzip2` | `busybox bzip2 -h 2>&1`，校验 `Usage` |
-| 25 | `test_cal.py` | `busybox_cal` | `busybox cal 2>&1`（仅要求非空） |
-| 26 | `test_cat.py` | `busybox_cat` | `busybox cat /proc/version 2>&1`，校验输出含 `Linux` |
-| 27 | `test_chattr.py` | `busybox_chattr` | `busybox chattr -h 2>&1`，校验 `Usage` |
-| 28 | `test_chgrp.py` | `busybox_chgrp` | `busybox chgrp -h 2>&1`，校验 `Usage` |
-| 29 | `test_chmod.py` | `busybox_chmod` | `busybox chmod -h 2>&1`，校验 `Usage` |
-| 30 | `test_chown.py` | `busybox_chown` | `busybox chown -h 2>&1`，校验 `Usage` |
-| 31 | `test_chpasswd.py` | `busybox_chpasswd` | `busybox chpasswd -h 2>&1`，校验 `Usage` |
-| 32 | `test_chroot.py` | `busybox_chroot` | `busybox chroot -h 2>&1`，校验 `Usage` |
-| 33 | `test_chvt.py` | `busybox_chvt` | `busybox chvt -h 2>&1`，校验 `Usage` |
-| 34 | `test_cksum.py` | `busybox_cksum` | `busybox cksum /proc/version 2>&1`（仅要求非空） |
-| 35 | `test_clear.py` | `busybox_clear` | `busybox clear -h 2>&1`，校验 `Usage`（清屏本身常无 stdout） |
-| 36 | `test_cmp.py` | `busybox_cmp` | `busybox cmp -h 2>&1`，校验 `Usage` |
-| 37 | `test_comm.py` | `busybox_comm` | `busybox comm -h 2>&1`，校验 `Usage` |
-| 38 | `test_cp.py` | `busybox_cp` | `busybox cp -h 2>&1`，校验 `Usage` |
-| 39 | `test_cpio.py` | `busybox_cpio` | `busybox cpio -h 2>&1`，校验 `Usage` |
-| 40 | `test_crond.py` | `busybox_crond` | `busybox crond -h 2>&1`，校验 `Usage` |
+| 21 | `test_brctl.py` | `busybox_brctl` | `brctl -h`，校验报错含 `/sys/class/net` |
+| 22 | `test_bunzip2.py` | `busybox_bunzip2` | 写入文件→`bzip2`→`bunzip2`→`cat`，校验 `bunzip_ok` |
+| 23 | `test_bzcat.py` | `busybox_bzcat` | 写入文件→`bzip2`→`bzcat`，校验 `bzcat_ok` |
+| 24 | `test_bzip2.py` | `busybox_bzip2` | 写入文件后 `bzip2 -kf`，校验 `bzip2_ok` |
+| 25 | `test_cal.py` | `busybox_cal` | `cal`，校验周标题 `Su Mo Tu We Th Fr Sa` |
+| 26 | `test_cat.py` | `busybox_cat` | `cat /etc/passwd`，校验含 `root:` |
+| 27 | `test_chattr.py` | `busybox_chattr` | `chattr -h`，校验 `Usage: chattr` |
+| 28 | `test_chgrp.py` | `busybox_chgrp` | 建文件后 `chgrp $(id -g)`，`ls -ln` 校验，输出 `chgrp_ok` |
+| 29 | `test_chmod.py` | `busybox_chmod` | 建文件后 `chmod 600`，`ls -l` 校验，输出 `chmod_ok` |
+| 30 | `test_chown.py` | `busybox_chown` | 建文件后 `chown $(id -u):$(id -g)`，`ls -ln` 校验，输出 `chown_ok` |
+| 31 | `test_chpasswd.py` | `busybox_chpasswd` | `chpasswd -h`，校验 `Usage: chpasswd` |
+| 32 | `test_chroot.py` | `busybox_chroot` | `chroot / /bin/busybox echo chroot_ok` |
+| 33 | `test_chvt.py` | `busybox_chvt` | `chvt -h`，校验错误含 `invalid number` |
+| 34 | `test_cksum.py` | `busybox_cksum` | `cksum /etc/passwd`，校验输出含 `/etc/passwd` |
+| 35 | `test_clear.py` | `busybox_clear` | `clear` 后 `echo clear_ok`，校验 `clear_ok` |
+| 36 | `test_cmp.py` | `busybox_cmp` | 两个相同文件 `cmp` 后输出 `cmp_ok` |
+| 37 | `test_comm.py` | `busybox_comm` | 两个排序文件 `comm`，校验含 `c` |
+| 38 | `test_cp.py` | `busybox_cp` | 复制临时文件并 `cat` 校验 `cp_ok` |
+| 39 | `test_cpio.py` | `busybox_cpio` | 构造 `newc` 包并校验包非空，输出 `cpio_ok` |
+| 40 | `test_crond.py` | `busybox_crond` | `crond -h`，校验 `Usage: crond` |
 | 41 | `test_crontab.py` | `busybox_crontab` | `busybox crontab -h 2>&1`，校验 `Usage` |
 | 42 | `test_cryptpw.py` | `busybox_cryptpw` | `busybox cryptpw -h 2>&1`，校验 `Usage` |
 | 43 | `test_cut.py` | `busybox_cut` | `echo 'a:b:c' \| cut -d: -f2`，校验输出含 `b` |
