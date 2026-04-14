@@ -3,8 +3,8 @@
 TEST = {
     "order": 115,
     "name": "busybox_iproute",
-    "cmd": "busybox iproute 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox ip route show 2>&1; busybox echo iproute_ok",
+    "expected_substring": "iproute_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

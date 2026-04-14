@@ -4,7 +4,7 @@ TEST = {
     "order": 70,
     "name": "busybox_fbset",
     "cmd": "busybox fbset -i 2>&1",
-    "expected_substring": None,
+    "expected_substring": "option 'i' not handled",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

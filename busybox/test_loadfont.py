@@ -4,7 +4,7 @@ TEST = {
     "order": 129,
     "name": "busybox_loadfont",
     "cmd": "busybox loadfont -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: loadfont",
     "expect_non_empty": True,
     "timeout": 3.0,
 }

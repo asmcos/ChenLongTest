@@ -4,7 +4,7 @@ TEST = {
     "order": 61,
     "name": "busybox_eject",
     "cmd": "busybox eject 2>&1",
-    "expected_substring": None,
+    "expected_substring": "/dev/cdrom",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

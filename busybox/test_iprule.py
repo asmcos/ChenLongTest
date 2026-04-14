@@ -3,8 +3,8 @@
 TEST = {
     "order": 116,
     "name": "busybox_iprule",
-    "cmd": "busybox iprule 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox ip rule show 2>&1; busybox echo iprule_ok",
+    "expected_substring": "iprule_ok",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

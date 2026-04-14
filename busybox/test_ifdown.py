@@ -4,7 +4,7 @@ TEST = {
     "order": 99,
     "name": "busybox_ifdown",
     "cmd": "busybox ifdown 2>&1",
-    "expected_substring": None,
+    "expected_substring": "ifdown",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

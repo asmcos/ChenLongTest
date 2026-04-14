@@ -4,7 +4,7 @@ TEST = {
     "order": 130,
     "name": "busybox_loadkmap",
     "cmd": "busybox loadkmap -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: loadkmap",
     "expect_non_empty": True,
     "timeout": 3.0,
 }

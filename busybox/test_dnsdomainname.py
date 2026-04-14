@@ -4,7 +4,7 @@ TEST = {
     "order": 55,
     "name": "busybox_dnsdomainname",
     "cmd": "busybox dnsdomainname -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "No help available",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

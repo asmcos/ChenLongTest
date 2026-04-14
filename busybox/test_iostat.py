@@ -4,7 +4,7 @@ TEST = {
     "order": 107,
     "name": "busybox_iostat",
     "cmd": "busybox iostat 1 1 2>&1",
-    "expected_substring": None,
+    "expected_substring": "avg-cpu",
     "expect_non_empty": True,
     "timeout": 5.0,
 }

@@ -4,7 +4,7 @@ TEST = {
     "order": 58,
     "name": "busybox_dumpkmap",
     "cmd": "busybox dumpkmap -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: dumpkmap",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

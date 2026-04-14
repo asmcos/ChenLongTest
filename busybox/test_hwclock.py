@@ -4,7 +4,7 @@ TEST = {
     "order": 96,
     "name": "busybox_hwclock",
     "cmd": "busybox hwclock -r 2>&1",
-    "expected_substring": None,
+    "expected_substring": "hwclock",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

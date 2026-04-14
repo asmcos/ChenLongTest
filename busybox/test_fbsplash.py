@@ -1,10 +1,10 @@
-# fbsplash：无参数时多为错误/提示，要求有输出
+# fbsplash：帮助输出（避免依赖帧缓冲设备）
 
 TEST = {
     "order": 71,
     "name": "busybox_fbsplash",
-    "cmd": "busybox fbsplash 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox fbsplash -h 2>&1",
+    "expected_substring": "Usage: fbsplash",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

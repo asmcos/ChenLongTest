@@ -4,7 +4,7 @@ TEST = {
     "order": 94,
     "name": "busybox_hostid",
     "cmd": "busybox hostid 2>&1",
-    "expected_substring": None,
+    "expected_substring": "0x",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

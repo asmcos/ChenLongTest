@@ -4,7 +4,7 @@ TEST = {
     "order": 63,
     "name": "busybox_ether_wake",
     "cmd": "busybox ether-wake 2>&1",
-    "expected_substring": None,
+    "expected_substring": "Usage: ether-wake",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

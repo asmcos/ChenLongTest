@@ -4,7 +4,7 @@ TEST = {
     "order": 90,
     "name": "busybox_halt",
     "cmd": "busybox halt -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: halt",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

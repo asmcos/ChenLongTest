@@ -1,10 +1,10 @@
-# fdisk：列出分区表（无权限时也会有错误输出）
+# fdisk：帮助输出（避免对实际块设备做扫描）
 
 TEST = {
     "order": 73,
     "name": "busybox_fdisk",
-    "cmd": "busybox fdisk -l 2>&1",
-    "expected_substring": None,
+    "cmd": "busybox fdisk -h 2>&1",
+    "expected_substring": "Usage: fdisk",
     "expect_non_empty": True,
-    "timeout": 3.0,
+    "timeout": 2.0,
 }

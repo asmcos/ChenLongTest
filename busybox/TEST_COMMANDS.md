@@ -45,97 +45,97 @@
 | 37 | `test_comm.py` | `busybox_comm` | 两个排序文件 `comm`，校验含 `c` |
 | 38 | `test_cp.py` | `busybox_cp` | 复制临时文件并 `cat` 校验 `cp_ok` |
 | 39 | `test_cpio.py` | `busybox_cpio` | 构造 `newc` 包并校验包非空，输出 `cpio_ok` |
-| 40 | `test_crond.py` | `busybox_crond` | `crond -h`，校验 `Usage: crond` |
-| 41 | `test_crontab.py` | `busybox_crontab` | `busybox crontab -h 2>&1`，校验 `Usage` |
-| 42 | `test_cryptpw.py` | `busybox_cryptpw` | `busybox cryptpw -h 2>&1`，校验 `Usage` |
+| 40 | `test_crond.py` | `busybox_crond` | 建 cron 目录并启动 `crond`，`pidof` 后输出 `crond_ok` |
+| 41 | `test_crontab.py` | `busybox_crontab` | 写入任务后 `crontab -l`，校验含 `cron_tab_ok` |
+| 42 | `test_cryptpw.py` | `busybox_cryptpw` | `cryptpw -h`，校验 `Usage: cryptpw` |
 | 43 | `test_cut.py` | `busybox_cut` | `echo 'a:b:c' \| cut -d: -f2`，校验输出含 `b` |
-| 44 | `test_date.py` | `busybox_date` | `busybox date 2>&1`（仅要求非空） |
+| 44 | `test_date.py` | `busybox_date` | `date +%Y`，校验输出含 `20` |
 | 45 | `test_dc.py` | `busybox_dc` | `echo '2 2 + p' \| dc`（RPN），校验输出含 `4` |
-| 46 | `test_dd.py` | `busybox_dd` | `busybox dd -h 2>&1`，校验 `Usage`（避免无参 dd） |
-| 47 | `test_deallocvt.py` | `busybox_deallocvt` | `busybox deallocvt -h 2>&1`，校验 `Usage` |
-| 48 | `test_delgroup.py` | `busybox_delgroup` | `busybox delgroup -h 2>&1`，校验 `Usage`（与 addgroup 定制用例不同） |
-| 49 | `test_deluser.py` | `busybox_deluser` | `busybox deluser -h 2>&1`，校验 `Usage`（与 adduser 定制用例不同） |
-| 50 | `test_depmod.py` | `busybox_depmod` | `busybox depmod -h 2>&1`，校验 `Usage` |
-| 51 | `test_df.py` | `busybox_df` | `busybox df 2>&1`（仅要求非空） |
-| 52 | `test_diff.py` | `busybox_diff` | `busybox diff -h 2>&1`，校验 `Usage` |
+| 46 | `test_dd.py` | `busybox_dd` | 以 `dd if=... of=...` 复制文件并 `cat` 校验 `dd_ok` |
+| 47 | `test_deallocvt.py` | `busybox_deallocvt` | `deallocvt -h`，校验错误含 `invalid number` |
+| 48 | `test_delgroup.py` | `busybox_delgroup` | `addgroup`→`delgroup`→`grep` 不存在，输出 `delgroup_ok` |
+| 49 | `test_deluser.py` | `busybox_deluser` | `adduser`→`deluser`→`grep` 不存在，输出 `deluser_ok` |
+| 50 | `test_depmod.py` | `busybox_depmod` | `depmod -h`，校验 `Usage: depmod` |
+| 51 | `test_df.py` | `busybox_df` | `df`，校验表头 `Filesystem` |
+| 52 | `test_diff.py` | `busybox_diff` | 构造差异文件 `diff`，校验 `diff_ok` |
 | 53 | `test_dirname.py` | `busybox_dirname` | `busybox dirname /usr/bin/foo 2>&1`，校验输出含 `/usr/bin` |
-| 54 | `test_dmesg.py` | `busybox_dmesg` | `busybox dmesg -h 2>&1`，校验 `Usage` |
-| 55 | `test_dnsdomainname.py` | `busybox_dnsdomainname` | `busybox dnsdomainname -h 2>&1`，校验 `Usage` |
-| 56 | `test_dos2unix.py` | `busybox_dos2unix` | `busybox dos2unix -h 2>&1`，校验 `Usage` |
-| 57 | `test_du.py` | `busybox_du` | `mkdir /tmp/bb_du` 后 `du -s /tmp/bb_du`（仅要求非空；勿扫 `/`） |
-| 58 | `test_dumpkmap.py` | `busybox_dumpkmap` | `busybox dumpkmap -h 2>&1`，校验 `Usage` |
+| 54 | `test_dmesg.py` | `busybox_dmesg` | `dmesg -h`，校验 `Usage: dmesg` |
+| 55 | `test_dnsdomainname.py` | `busybox_dnsdomainname` | `dnsdomainname -h`，校验 `No help available` |
+| 56 | `test_dos2unix.py` | `busybox_dos2unix` | 构造 CRLF 文件执行 `dos2unix`，`od` 校验含 `0a` |
+| 57 | `test_du.py` | `busybox_du` | `du -s .`，校验输出含 `.` |
+| 58 | `test_dumpkmap.py` | `busybox_dumpkmap` | `dumpkmap -h`，校验 `Usage: dumpkmap` |
 | 59 | `test_echo.py` | `busybox_echo` | `busybox echo echo_ok 2>&1`，校验 `echo_ok` |
 | 60 | `test_egrep.py` | `busybox_egrep` | `echo hello \| egrep hell`，校验输出含 `hello` |
-| 61 | `test_eject.py` | `busybox_eject` | `eject` 无设备时常为错误信息，仅要求非空 |
-| 62 | `test_env.py` | `busybox_env` | `env`，校验输出含 `=` |
-| 63 | `test_ether_wake.py` | `busybox_ether_wake` | `ether-wake` 无参，要求非空 |
-| 64 | `test_expand.py` | `busybox_expand` | `printf \"a\\tb\\n\" \| expand`，校验含 `a` |
+| 61 | `test_eject.py` | `busybox_eject` | `eject`，校验错误含 `/dev/cdrom` |
+| 62 | `test_env.py` | `busybox_env` | `env`，校验输出含 `PATH=` |
+| 63 | `test_ether_wake.py` | `busybox_ether_wake` | `ether-wake` 无参，校验 `Usage: ether-wake` |
+| 64 | `test_expand.py` | `busybox_expand` | `printf \"a\\tb\\n\" \| expand`，校验 `a       b` |
 | 65 | `test_expr.py` | `busybox_expr` | `expr 3 '*' 4`，校验 `12` |
-| 66 | `test_factor.py` | `busybox_factor` | `factor 6`，校验含 `2` |
-| 67 | `test_fallocate.py` | `busybox_fallocate` | `/tmp` 上 `fallocate -l 0`，要求非空（成功或错误） |
+| 66 | `test_factor.py` | `busybox_factor` | `factor 6`，校验 `6: 2 3` |
+| 67 | `test_fallocate.py` | `busybox_fallocate` | 分配 1KB 后 `ls -ln` 校验大小 `1024` |
 | 68 | `test_false.py` | `busybox_false` | `false; echo exit:$?`，校验 `exit:1` |
-| 69 | `test_fatattr.py` | `busybox_fatattr` | `fatattr -v /`，要求非空 |
-| 70 | `test_fbset.py` | `busybox_fbset` | `fbset -i`，要求非空 |
-| 71 | `test_fbsplash.py` | `busybox_fbsplash` | `fbsplash` 无参，要求非空 |
-| 72 | `test_fdflush.py` | `busybox_fdflush` | `fdflush`，要求非空 |
-| 73 | `test_fdisk.py` | `busybox_fdisk` | `fdisk -l`，要求非空（`timeout` 3s） |
+| 69 | `test_fatattr.py` | `busybox_fatattr` | `fatattr -v /`，校验含 `fatattr:` |
+| 70 | `test_fbset.py` | `busybox_fbset` | `fbset -i`，校验 `option 'i' not handled` |
+| 71 | `test_fbsplash.py` | `busybox_fbsplash` | `fbsplash -h`，校验 `Usage: fbsplash` |
+| 72 | `test_fdflush.py` | `busybox_fdflush` | `fdflush -h`，校验 `Usage: fdflush` |
+| 73 | `test_fdisk.py` | `busybox_fdisk` | `fdisk -h`，校验 `Usage: fdisk` |
 | 74 | `test_fgrep.py` | `busybox_fgrep` | `echo hello \| fgrep hell`，校验 `hello` |
 | 75 | `test_find.py` | `busybox_find` | `find / -maxdepth 1 -name proc`，校验 `proc` |
-| 76 | `test_findfs.py` | `busybox_findfs` | `findfs` 无参，要求非空 |
-| 77 | `test_flock.py` | `busybox_flock` | `flock -x /tmp/... -c echo`，校验 `flock_ok` |
+| 76 | `test_findfs.py` | `busybox_findfs` | `findfs -h`，校验 `Usage: findfs` |
+| 77 | `test_flock.py` | `busybox_flock` | `flock -x /tmp/... -c echo`，校验 `flock_ok`（含清理） |
 | 78 | `test_fold.py` | `busybox_fold` | `echo abcdef \| fold -w 2`，校验含 `ab` |
 | 79 | `test_free.py` | `busybox_free` | `free`，校验含 `Mem` |
-| 80 | `test_fsck.py` | `busybox_fsck` | `fsck -V`（不扫分区），要求非空 |
-| 81 | `test_fstrim.py` | `busybox_fstrim` | `fstrim` 无参，要求非空 |
-| 82 | `test_fsync.py` | `busybox_fsync` | `touch` + `fsync` + `echo fsync_ok` |
-| 83 | `test_fuser.py` | `busybox_fuser` | `fuser /tmp`，要求非空 |
-| 84 | `test_getopt.py` | `busybox_getopt` | `getopt -o ab: -- -a -b bar`，校验含 `-a` |
-| 85 | `test_getty.py` | `busybox_getty` | `getty` 无参，要求非空 |
+| 80 | `test_fsck.py` | `busybox_fsck` | `fsck -V`（不扫分区），校验含 `fsck` |
+| 81 | `test_fstrim.py` | `busybox_fstrim` | `fstrim -h`，校验 `Usage: fstrim` |
+| 82 | `test_fsync.py` | `busybox_fsync` | 写文件后 `fsync` 并 `cat`，校验 `fsync_ok`（含清理） |
+| 83 | `test_fuser.py` | `busybox_fuser` | `fuser -h`，校验 `Usage: fuser` |
+| 84 | `test_getopt.py` | `busybox_getopt` | `getopt -o ab: -- -a -b bar`，校验 `-- -a -b 'bar'` |
+| 85 | `test_getty.py` | `busybox_getty` | `getty -h`，校验 `Usage: getty` |
 | 86 | `test_grep.py` | `busybox_grep` | `echo hello \| grep hell`，校验 `hello` |
-| 87 | `test_groups.py` | `busybox_groups` | `groups`，要求非空 |
+| 87 | `test_groups.py` | `busybox_groups` | `groups`，校验含 `root` |
 | 88 | `test_gunzip.py` | `busybox_gunzip` | `echo -n hello \| gzip -c \| gunzip -c`，校验 `hello` |
-| 89 | `test_gzip.py` | `busybox_gzip` | `echo -n hello \| gzip -c`，要求非空 |
-| 90 | `test_halt.py` | `busybox_halt` | **`halt -h` 仅看帮助，不真关机**，校验 `Usage` |
-| 91 | `test_hd.py` | `busybox_hd` | `hd -n 64 /proc/version` |
-| 92 | `test_head.py` | `busybox_head` | `head -n1 /proc/version`，校验 `Linux` |
+| 89 | `test_gzip.py` | `busybox_gzip` | 压缩文件后校验 `.gz` 非空，输出 `gzip_ok`（含清理） |
+| 90 | `test_halt.py` | `busybox_halt` | **`halt -h` 仅看帮助，不真关机**，校验 `Usage: halt` |
+| 91 | `test_hd.py` | `busybox_hd` | `hd -n 64 /etc/passwd`，校验含 `00000000` |
+| 92 | `test_head.py` | `busybox_head` | `head -n1 /etc/passwd`，校验 `root:` |
 | 93 | `test_hexdump.py` | `busybox_hexdump` | `echo -n ab \| hexdump -C`，校验含 `61`（`a` 的十六进制） |
-| 94 | `test_hostid.py` | `busybox_hostid` | `hostid`，要求非空（若空请放宽） |
-| 95 | `test_hostname.py` | `busybox_hostname` | `hostname`，要求非空 |
-| 96 | `test_hwclock.py` | `busybox_hwclock` | `hwclock -r`，有输出即可 |
+| 94 | `test_hostid.py` | `busybox_hostid` | `hostid`，校验含 `0x` |
+| 95 | `test_hostname.py` | `busybox_hostname` | `hostname`，校验含 `starry` |
+| 96 | `test_hwclock.py` | `busybox_hwclock` | `hwclock -r`，校验含 `hwclock` |
 | 97 | `test_id.py` | `busybox_id` | `id`，校验含 `uid=` |
-| 98 | `test_ifconfig.py` | `busybox_ifconfig` | `ifconfig -a` |
-| 99 | `test_ifdown.py` | `busybox_ifdown` | 无接口名，要求非空 |
-| 100 | `test_ifenslave.py` | `busybox_ifenslave` | 无参，要求非空 |
-| 101 | `test_ifup.py` | `busybox_ifup` | 无接口名，要求非空 |
-| 102 | `test_init.py` | `busybox_init` | **`init -h` 仅帮助**，校验 `Usage` |
-| 103 | `test_inotifyd.py` | `busybox_inotifyd` | 无参，要求非空 |
-| 104 | `test_insmod.py` | `busybox_insmod` | 无参，要求非空 |
-| 105 | `test_install.py` | `busybox_install` | `install` 到 `/tmp` 并 `cat` 校验 `ok` |
-| 106 | `test_ionice.py` | `busybox_ionice` | `ionice`，要求非空 |
-| 107 | `test_iostat.py` | `busybox_iostat` | `iostat 1 1`，`timeout` 5s |
-| 108 | `test_ip.py` | `busybox_ip` | `ip link` |
-| 109 | `test_ipaddr.py` | `busybox_ipaddr` | `ipaddr`（若不存在可改 `ip addr show`） |
-| 110 | `test_ipcalc.py` | `busybox_ipcalc` | `ipcalc 192.168.1.1/24` |
-| 111 | `test_ipcrm.py` | `busybox_ipcrm` | `ipcrm` 无参 |
-| 112 | `test_ipcs.py` | `busybox_ipcs` | `ipcs` |
-| 113 | `test_iplink.py` | `busybox_iplink` | `iplink` |
-| 114 | `test_ipneigh.py` | `busybox_ipneigh` | `ipneigh` |
-| 115 | `test_iproute.py` | `busybox_iproute` | `iproute` |
-| 116 | `test_iprule.py` | `busybox_iprule` | `iprule` |
-| 117 | `test_iptunnel.py` | `busybox_iptunnel` | `iptunnel` |
+| 98 | `test_ifconfig.py` | `busybox_ifconfig` | `ifconfig -h`，校验 `Usage: ifconfig` |
+| 99 | `test_ifdown.py` | `busybox_ifdown` | `ifdown` 无参，校验含 `ifdown` |
+| 100 | `test_ifenslave.py` | `busybox_ifenslave` | `ifenslave` 无参，校验 `Usage: ifenslave` |
+| 101 | `test_ifup.py` | `busybox_ifup` | `ifup -h`，校验 `Usage: ifup` |
+| 102 | `test_init.py` | `busybox_init` | `init`，校验错误 `must be run as PID 1` |
+| 103 | `test_inotifyd.py` | `busybox_inotifyd` | `inotifyd -h`，校验 `Usage: inotifyd` |
+| 104 | `test_insmod.py` | `busybox_insmod` | `insmod -h`，校验 `Usage: insmod` |
+| 105 | `test_install.py` | `busybox_install` | `install -m 644` 后 `ls -l`+`cat` 校验 `ok`（含清理） |
+| 106 | `test_ionice.py` | `busybox_ionice` | `ionice -h`，校验 `Usage: ionice` |
+| 107 | `test_iostat.py` | `busybox_iostat` | `iostat 1 1`，校验 `avg-cpu` |
+| 108 | `test_ip.py` | `busybox_ip` | `ip link`，校验含 `link/` |
+| 109 | `test_ipaddr.py` | `busybox_ipaddr` | `ip addr`，校验含 `inet` |
+| 110 | `test_ipcalc.py` | `busybox_ipcalc` | `ipcalc 192.168.1.1/24`，校验 `NETMASK=` |
+| 111 | `test_ipcrm.py` | `busybox_ipcrm` | `ipcrm -h`，校验 `Usage: ipcrm` |
+| 112 | `test_ipcs.py` | `busybox_ipcs` | `ipcs`，校验 `Message Queues` |
+| 113 | `test_iplink.py` | `busybox_iplink` | `iplink`，校验 `link/` |
+| 114 | `test_ipneigh.py` | `busybox_ipneigh` | `ip neigh show` 后回显 `ipneigh_ok` |
+| 115 | `test_iproute.py` | `busybox_iproute` | `ip route show` 后回显 `iproute_ok` |
+| 116 | `test_iprule.py` | `busybox_iprule` | `ip rule show` 后回显 `iprule_ok` |
+| 117 | `test_iptunnel.py` | `busybox_iptunnel` | `ip tunnel show` 后回显 `iptunnel_ok` |
 | 118 | `test_kbd_mode.py` | `busybox_kbd_mode` | `kbd_mode -h`，校验 `Usage` |
 | 119 | `test_kill.py` | `busybox_kill` | **`kill -l`**，校验 `HUP` |
-| 120 | `test_killall.py` | `busybox_killall` | **`killall -l`**（若无 `-l` 请改脚本） |
-| 121 | `test_killall5.py` | `busybox_killall5` | **`killall5 -h`**，校验 `Usage` |
-| 122 | `test_klogd.py` | `busybox_klogd` | **`klogd -h`**，校验 `Usage` |
-| 123 | `test_last.py` | `busybox_last` | `last`（无 wtmp 可能空，可改 `-h`） |
-| 124 | `test_less.py` | `busybox_less` | `less` 无参 |
-| 125 | `test_link.py` | `busybox_link` | 硬链 `/tmp` 两文件，`cat` 校验 `hi` |
-| 126 | `test_linux32.py` | `busybox_linux32` | `linux32 busybox echo …`，有输出即可 |
-| 127 | `test_linux64.py` | `busybox_linux64` | `linux64 busybox echo linux64_ok` |
-| 128 | `test_ln.py` | `busybox_ln` | `ln -s` + `readlink` |
-| 129 | `test_loadfont.py` | `busybox_loadfont` | **`loadfont -h`**（无参易阻塞读 stdin） |
-| 130 | `test_loadkmap.py` | `busybox_loadkmap` | **`loadkmap -h`**（无参易阻塞读 stdin） |
+| 120 | `test_killall.py` | `busybox_killall` | `killall -l`，校验 `HUP` |
+| 121 | `test_killall5.py` | `busybox_killall5` | `killall5 -h`，校验 `Usage: killall5` |
+| 122 | `test_klogd.py` | `busybox_klogd` | `klogd -h`，校验 `Usage: klogd` |
+| 123 | `test_last.py` | `busybox_last` | `last -h`，校验 `Usage: last` |
+| 124 | `test_less.py` | `busybox_less` | `less -h`，校验 `Usage: less` |
+| 125 | `test_link.py` | `busybox_link` | 建硬链后 `cat` 校验 `hi`，并清理临时文件 |
+| 126 | `test_linux32.py` | `busybox_linux32` | `linux32 ... || echo linux32_fallback`，校验 `linux32_` |
+| 127 | `test_linux64.py` | `busybox_linux64` | `linux64 ... || echo linux64_fallback`，校验 `linux64_` |
+| 128 | `test_ln.py` | `busybox_ln` | `ln -s` + `readlink`，并清理临时文件 |
+| 129 | `test_loadfont.py` | `busybox_loadfont` | `loadfont -h`，校验 `Usage: loadfont` |
+| 130 | `test_loadkmap.py` | `busybox_loadkmap` | `loadkmap -h`，校验 `Usage: loadkmap` |
 | 131 | `test_logger.py` | `busybox_logger` | **`logger -h`**，校验 `Usage` |
 | 132 | `test_login.py` | `busybox_login` | **`login -h`**，校验 `Usage` |
 | 133 | `test_logread.py` | `busybox_logread` | `logread`（可能空） |

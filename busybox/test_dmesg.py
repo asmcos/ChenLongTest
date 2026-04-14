@@ -4,7 +4,7 @@ TEST = {
     "order": 54,
     "name": "busybox_dmesg",
     "cmd": "busybox dmesg -h 2>&1",
-    "expected_substring": "Usage",
+    "expected_substring": "Usage: dmesg",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

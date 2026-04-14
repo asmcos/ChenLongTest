@@ -4,7 +4,7 @@ TEST = {
     "order": 108,
     "name": "busybox_ip",
     "cmd": "busybox ip link 2>&1",
-    "expected_substring": None,
+    "expected_substring": "link/",
     "expect_non_empty": True,
     "timeout": 2.0,
 }

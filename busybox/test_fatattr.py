@@ -4,7 +4,7 @@ TEST = {
     "order": 69,
     "name": "busybox_fatattr",
     "cmd": "busybox fatattr -v / 2>&1",
-    "expected_substring": None,
+    "expected_substring": "fatattr:",
     "expect_non_empty": True,
     "timeout": 2.0,
 }
