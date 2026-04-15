@@ -10,15 +10,15 @@
 | 2 | `test_add_shell.py` | `busybox_add_shell` | `busybox add-shell 2>&1`（仅要求非空） |
 | 3 | `test_addgroup.py` | `busybox_addgroup` | 定制：`delgroup` → `addgroup <唯一组名>` → `grep -F '<组>:' /etc/group`（校验组行存在） |
 | 4 | `test_adduser.py` | `busybox_adduser` | 定制：`deluser` → `adduser -D -H <唯一用户>` → `grep -F '<用户>:' /etc/passwd`（校验 passwd 行存在） |
-| 5 | `test_adjtimex.py` | `busybox_adjtimex` | `busybox adjtimex 2>&1`（仅要求非空） |
+| 5 | `test_adjtimex.py` | `busybox_adjtimex` | `busybox adjtimex`；若含 `Function not implemented` / `Unimplemented syscall` 则 FAIL |
 | 6 | `test_busybox_list.py` | `busybox_list` | `busybox --list`（仅要求非空） |
 | 7 | `test_ls.py` | `ls_root` | `ls /`，校验输出含 `bin` |
 | 8 | `test_arch.py` | `busybox_arch` | `busybox arch`，校验含 `riscv` |
-| 9 | `test_arp.py` | `busybox_arp` | `busybox arp`，校验错误含 `/proc/net/arp` |
-| 10 | `test_arping.py` | `busybox_arping` | `busybox arping`，校验含 `Address family not supported` |
+| 9 | `test_arp.py` | `busybox_arp` | `busybox arp`，仅通过 `HWtype` 判定功能可用（否则 FAIL） |
+| 10 | `test_arping.py` | `busybox_arping` | `busybox arping -c 1 127.0.0.1`，校验 `Received`（否则 FAIL） |
 | 11 | `test_ash.py` | `busybox_ash` | `busybox ash -c 'echo ash_ok' 2>&1`，校验 `ash_ok`（避免无参进入交互 shell） |
 | 12 | `test_awk.py` | `busybox_awk` | `busybox awk 'BEGIN{print "awk_ok"}' 2>&1`，校验 `awk_ok` |
-| 13 | `test_base64.py` | `busybox_base64` | `echo test \| base64`，校验 `dGVzdAo=` |
+| 13 | `test_base64.py` | `busybox_base64` | `busybox echo test \| busybox base64`，校验 `dGVzdAo=`，`wait_for` 防串口早收 |
 | 14 | `test_basename.py` | `busybox_basename` | `busybox basename /usr/bin/foo 2>&1`，校验 `foo` |
 | 15 | `test_bbconfig.py` | `busybox_bbconfig` | `bbconfig`，校验 `CONFIG_BUSYBOX=y` |
 | 16 | `test_bc.py` | `busybox_bc` | `busybox echo '2+2' \| busybox bc 2>&1`，校验输出含 `4` |

@@ -69,3 +69,7 @@ python3 main.py --order 57
 ```bash
 python3 -c 'from busybox import discover_loaded_tests as d; print("\n".join("%s  %s" % (s["order"], s["name"]) for s,_ in d()))'
 ```
+
+### 排障：手敲正常、脚本 FAIL
+
+在 `starry:~#` 下试几条与用例等价的命令（管道、`&&`、`;`、`busybox` 前缀等），把**带提示符的几行原样**留下（或贴到讨论里）。对照 `logs/<会话>/busybox_*.log` 时很有用。脚本侧若串口截断过早，可在对应 `TEST` 里加 `wait_for`（等到关键子串再结束收包）。

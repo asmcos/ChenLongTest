@@ -52,6 +52,11 @@ Runnable = Union[TestCase, CustomTest]
 
 def test_case_from_spec(spec: Dict[str, Any]) -> TestCase:
     """将 busybox 等子模块中的 TEST 字典转为 TestCase（字段统一）。"""
+    fail_subs: List[str] = []
+    if spec.get("fail_if_substrings"):
+        fail_subs.extend(spec["fail_if_substrings"])
+    elif spec.get("fail_if_substring"):
+        fail_subs.append(spec["fail_if_substring"])
     return TestCase(
         name=spec["name"],
         cmd=spec["cmd"],
@@ -59,6 +64,8 @@ def test_case_from_spec(spec: Dict[str, Any]) -> TestCase:
         expect_non_empty=bool(spec.get("expect_non_empty", True)),
         timeout=float(spec.get("timeout", 2.0)),
         clean=spec.get("clean"),
+        fail_if_substrings=fail_subs or None,
+        wait_for=spec.get("wait_for"),
     )
 
 
@@ -106,15 +113,32 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
-def save_output_to_file(cmd: str, output: str, test_name: str, session_dir: str) -> str:
-    """将命令输出保存到本次会话目录下的文件，返回文件路径（文件名不含时间戳）"""
+def save_output_to_file(
+    cmd: str,
+    output: str,
+    test_name: str,
+    session_dir: str,
+    raw_transcript: Optional[str] = None,
+) -> str:
+    """将命令输出保存到本次会话目录下的文件，返回文件路径（文件名不含时间戳）。
+
+    raw_transcript: send_cmd 收到的串口原文（含 starry:~# 与回显），便于与手动交互对照；
+    output: 供子串断言的处理后文本（可能与原文在首行去重等方面不同）。
+    """
     filename = f"{safe_filename(test_name)}.log"
     filepath = os.path.join(session_dir, filename)
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(f"Command: {cmd}\n")
         f.write(f"Timestamp: {datetime.now().isoformat()}\n")
         f.write("=" * 60 + "\n")
-        f.write(output)
+        f.write("串口原文（含提示符与回显，可与手动 starry:~# 对照）\n")
+        f.write("=" * 60 + "\n")
+        f.write((raw_transcript if raw_transcript is not None else output).rstrip())
+        f.write("\n\n")
+        f.write("=" * 60 + "\n")
+        f.write("用于子串断言的处理后输出（send_cmd 去重首行等）\n")
+        f.write("=" * 60 + "\n")
+        f.write(output.rstrip())
         f.write("\n" + "=" * 60 + "\n")
     logger.info(f"Output saved to {filepath}")
     return filepath
@@ -135,19 +159,25 @@ def run_test_cleanup(client: QemuSerialClient, test: Runnable) -> None:
 def run_tests(client: QemuSerialClient, tests: List[Runnable], session_dir: str) -> None:
     """运行测试套件；会话目录已存在，每个命令输出保存为该目录下的单独文件。"""
     logger.info(f"Starting {len(tests)} tests...")
-    logger.info("Cleanup policy: run per-test TEST['clean'] if provided")
+    logger.info(
+        "Between tests: recover_shell() (leave stuck foreground jobs) then TEST['clean'] if set"
+    )
     passed = 0
     failed = 0
     for test in tests:
         logger.info(f"Running test: {test.name} -> {test.cmd}")
+        client.begin_test_capture()
         ok, msg, output = test.run(client)
-        save_output_to_file(test.cmd, output, test.name, session_dir)
+        raw_ts = client.get_serial_transcript_for_log()
+        save_output_to_file(test.cmd, output, test.name, session_dir, raw_transcript=raw_ts)
+        client.begin_test_capture()
         if ok:
             logger.info(f"✅ PASS: {test.name} - {msg}")
             passed += 1
         else:
             logger.error(f"❌ FAIL: {test.name} - {msg}")
             failed += 1
+        client.recover_shell()
         run_test_cleanup(client, test)
         time.sleep(0.3)
     logger.info(f"Test summary: {passed} passed, {failed} failed, total {len(tests)}")
@@ -182,6 +212,15 @@ def main(argv: Optional[List[str]] = None) -> None:
     client = QemuSerialClient(host=SERIAL_HOST, port=4444, timeout=1.0)
     try:
         client.connect()
+        client.recover_shell()
+        if not client.probe_serial_forwards_stdout():
+            logger.warning(
+                "当前 TCP 串口似乎未转发命令的标准输出（busybox id 未见 uid=/gid=）。"
+                "若你在 starry:~# 手动能跑通而本脚本始终只有「.busybox…」式回显，"
+                "请核对 QEMU -serial 是否指向与手动终端相同的一路（pty/telnet/tcp 等）；"
+                "若刚跑过会占前台的 applet（如 acpid），可先被 recover_shell 打断后再测。"
+                "在仅回显、无 stdout 时，依赖子串的用例（如 base64）无法通过。"
+            )
         client.send_cmd("")  # 唤醒 shell
         run_tests(client, suite, session_dir)
     except ConnectionRefusedError:
