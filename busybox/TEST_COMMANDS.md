@@ -23,9 +23,9 @@
 | 15 | `test_bbconfig.py` | `busybox_bbconfig` | `bbconfig`，校验 `CONFIG_BUSYBOX=y` |
 | 16 | `test_bc.py` | `busybox_bc` | `busybox echo '2+2' \| busybox bc 2>&1`，校验输出含 `4` |
 | 17 | `test_beep.py` | `busybox_beep` | `beep`，校验错误含 `can't open console` |
-| 18 | `test_blkdiscard.py` | `busybox_blkdiscard` | `blkdiscard /dev/null`；`run()` 接受 `/dev/null`、`not a block`、`Unsupported ioctl` 等设备错误片段 |
+| 18 | `test_blkdiscard.py` | `busybox_blkdiscard` | `blkdiscard /dev/loop0; echo __RC:$?`，要求 `__RC:0`（不支持则 FAIL） |
 | 19 | `test_blkid.py` | `busybox_blkid` | `blkid /dev/null`；`run()` 接受 `/dev/null`、`Unsupported ioctl`、`Usage` 等片段（兼容 Starry 仅内核日志） |
-| 20 | `test_blockdev.py` | `busybox_blockdev` | `blockdev --getss /dev/null`；`run()` 接受 `/dev/null`、`not a block`、`Unsupported ioctl` 等设备错误片段 |
+| 20 | `test_blockdev.py` | `busybox_blockdev` | `blockdev --getss /dev/loop0; echo __RC:$?`，要求 `__RC:0` 且输出数字 sector size（不支持则 FAIL） |
 | 21 | `test_brctl.py` | `busybox_brctl` | `brctl -h`，校验报错含 `/sys/class/net` |
 | 22 | `test_bunzip2.py` | `busybox_bunzip2` | 写入文件→`bzip2`→`bunzip2`→`cat`，校验 `bunzip_ok` |
 | 23 | `test_bzcat.py` | `busybox_bzcat` | 写入文件→`bzip2`→`bzcat`，校验 `bzcat_ok` |

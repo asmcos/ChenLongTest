@@ -1,7 +1,7 @@
-# busybox_list.log：beep 之后 — blkdiscard
+# busybox_list.log：beep 之后 — blkdiscard（真实功能校验）
 #
-# 不再用「无参看 Usage」；改为对 /dev/null 执行真实丢弃动作，
-# 在 QEMU/Starry 环境通常会走设备错误或 ioctl 错误路径。
+# 目标：在可用块设备上执行 discard，并检查退出码为 0。
+# 当前 Starry/QEMU 若设备或 ioctl 不支持，应 FAIL（暴露能力缺口，而非误判 PASS）。
 
 from __future__ import annotations
 
@@ -9,24 +9,16 @@ from typing import Tuple
 
 from harness import QemuSerialClient
 
-_CMD = "busybox blkdiscard /dev/null 2>&1"
-_MARKERS = (
-    "/dev/null",
-    "not a block",
-    "Operation not supported",
-    "Inappropriate ioctl",
-    "Unsupported ioctl",
-    "No such file",
-)
+_CMD = "busybox blkdiscard /dev/loop0 2>&1; busybox echo __RC:$?"
 
 
 def run(client: QemuSerialClient) -> Tuple[bool, str, str]:
-    out = client.send_cmd(_CMD, timeout=2.0)
-    if any(m in out for m in _MARKERS):
-        return True, "blkdiscard: matched expected device-error/ioctl fragment", out
+    out = client.send_cmd(_CMD, timeout=3.0)
+    if "__RC:0" in out:
+        return True, "blkdiscard succeeded on /dev/loop0 (__RC:0)", out
     return (
         False,
-        f"Unexpected blkdiscard output (no known marker). Preview: {out[:200]!r}",
+        "blkdiscard failed or unsupported on /dev/loop0 (expected __RC:0)",
         out,
     )
 
@@ -37,5 +29,5 @@ TEST = {
     "cmd": _CMD,
     "expected_substring": None,
     "expect_non_empty": True,
-    "timeout": 2.0,
+    "timeout": 3.0,
 }

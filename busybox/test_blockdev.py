@@ -1,7 +1,7 @@
-# busybox_list.log：blkid 之后 — blockdev
+# busybox_list.log：blkid 之后 — blockdev（真实功能校验）
 #
-# 不再用 -h；改测真实子命令（读取 sector size）。在 /dev/null 上应触发
-# 非块设备 / ioctl 相关错误，用于确认命令路径可达。
+# 目标：读取块设备 sector size，检查退出码为 0 且输出为数字。
+# 当前 Starry/QEMU 若 ioctl 不支持，应 FAIL（暴露能力缺口，而非误判 PASS）。
 
 from __future__ import annotations
 
@@ -9,25 +9,24 @@ from typing import Tuple
 
 from harness import QemuSerialClient
 
-_CMD = "busybox blockdev --getss /dev/null 2>&1"
-_MARKERS = (
-    "/dev/null",
-    "not a block",
-    "Inappropriate ioctl",
-    "Unsupported ioctl",
-    "No such file",
-)
+_CMD = "busybox blockdev --getss /dev/loop0 2>&1; busybox echo __RC:$?"
 
 
 def run(client: QemuSerialClient) -> Tuple[bool, str, str]:
-    out = client.send_cmd(_CMD, timeout=2.0)
-    if any(m in out for m in _MARKERS):
-        return True, "blockdev: matched expected device-error/ioctl fragment", out
-    return (
-        False,
-        f"Unexpected blockdev output (no known marker). Preview: {out[:200]!r}",
-        out,
-    )
+    out = client.send_cmd(_CMD, timeout=3.0)
+    if "__RC:0" not in out:
+        return (
+            False,
+            "blockdev --getss failed or unsupported on /dev/loop0 (expected __RC:0)",
+            out,
+        )
+
+    lines = [ln.strip() for ln in out.splitlines() if ln.strip() and not ln.strip().startswith("starry:~#")]
+    data_lines = [ln for ln in lines if not ln.startswith("__RC:")]
+    has_numeric = any(ln.isdigit() for ln in data_lines)
+    if has_numeric:
+        return True, "blockdev --getss returned numeric sector size with __RC:0", out
+    return False, "blockdev rc=0 but no numeric sector-size output found", out
 
 
 TEST = {
@@ -36,5 +35,5 @@ TEST = {
     "cmd": _CMD,
     "expected_substring": None,
     "expect_non_empty": True,
-    "timeout": 2.0,
+    "timeout": 3.0,
 }
