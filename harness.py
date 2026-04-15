@@ -294,6 +294,7 @@ class TestCase:
         clean: Optional[str] = None,
         fail_if_substrings: Optional[Sequence[str]] = None,
         wait_for: Optional[str] = None,
+        order: Optional[int] = None,
     ):
         self.name = name
         self.cmd = cmd
@@ -303,6 +304,7 @@ class TestCase:
         self.clean = clean
         self.fail_if_substrings: Tuple[str, ...] = tuple(fail_if_substrings or ())
         self.wait_for = wait_for
+        self.order = order
 
     def run(self, client: QemuSerialClient) -> Tuple[bool, str, str]:
         try:
@@ -348,6 +350,8 @@ class CustomTest:
         self.name = spec["name"]
         self.cmd = spec.get("cmd", f"[custom] {self.name}")
         self.clean = spec.get("clean")
+        o = spec.get("order")
+        self.order: Optional[int] = int(o) if o is not None else None
 
     def run(self, client: QemuSerialClient) -> Tuple[bool, str, str]:
         return self.run_fn(client)

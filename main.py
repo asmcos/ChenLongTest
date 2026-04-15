@@ -12,7 +12,7 @@ import os
 import sys
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from harness import CustomTest, QemuSerialClient, TestCase, safe_filename
 
@@ -50,6 +50,51 @@ SERIAL_HOST = "192.168.123.33"
 Runnable = Union[TestCase, CustomTest]
 
 
+def runnable_order(test: Runnable) -> Optional[int]:
+    """从 TestCase.order 或 CustomTest.spec['order'] 取序号，供日志与落盘。"""
+    o = getattr(test, "order", None)
+    if o is not None:
+        return int(o)
+    spec = getattr(test, "spec", None)
+    if isinstance(spec, dict):
+        raw = spec.get("order")
+        if raw is not None:
+            return int(raw)
+    return None
+
+
+def parse_order_range(s: str) -> Tuple[int, int]:
+    """``--order-range`` 参数：``1-13`` 或 ``13-1``（自动交换为闭区间）。"""
+    s = s.strip()
+    if "-" not in s:
+        raise argparse.ArgumentTypeError("必须是 START-END，例如 1-13")
+    a, _, b = s.partition("-")
+    if not a.strip() or not b.strip():
+        raise argparse.ArgumentTypeError("必须是 START-END，例如 1-13")
+    lo, hi = int(a.strip()), int(b.strip())
+    if lo > hi:
+        lo, hi = hi, lo
+    return (lo, hi)
+
+
+def parse_orders(s: str) -> Tuple[int, ...]:
+    """``--orders`` 参数：逗号分隔，如 ``1,4,6,19``；也接受 ``[1,4,6,19]`` 形式。"""
+    s = s.strip()
+    if s.startswith("[") and s.endswith("]"):
+        s = s[1:-1].strip()
+    if not s:
+        raise argparse.ArgumentTypeError("至少给一个 order，例如 1,4,6,19 或 [1,4,6,19]")
+    parts: List[int] = []
+    for p in s.split(","):
+        p = p.strip()
+        if not p:
+            continue
+        parts.append(int(p))
+    if not parts:
+        raise argparse.ArgumentTypeError("至少给一个 order，例如 1,4,6,19")
+    return tuple(parts)
+
+
 def test_case_from_spec(spec: Dict[str, Any]) -> TestCase:
     """将 busybox 等子模块中的 TEST 字典转为 TestCase（字段统一）。"""
     fail_subs: List[str] = []
@@ -57,6 +102,7 @@ def test_case_from_spec(spec: Dict[str, Any]) -> TestCase:
         fail_subs.extend(spec["fail_if_substrings"])
     elif spec.get("fail_if_substring"):
         fail_subs.append(spec["fail_if_substring"])
+    o = spec.get("order")
     return TestCase(
         name=spec["name"],
         cmd=spec["cmd"],
@@ -66,24 +112,36 @@ def test_case_from_spec(spec: Dict[str, Any]) -> TestCase:
         clean=spec.get("clean"),
         fail_if_substrings=fail_subs or None,
         wait_for=spec.get("wait_for"),
+        order=int(o) if o is not None else None,
     )
 
 
 def load_test_suite(
     name: Optional[str] = None,
     order: Optional[int] = None,
+    order_range: Optional[Tuple[int, int]] = None,
+    orders: Optional[Sequence[int]] = None,
 ) -> List[Runnable]:
     """
     动态发现并加载 busybox/ 下各 test_*.py：有 run() 走定制，否则走默认 TestCase。
-    name / order 二选一或同时指定（同时指定时须同一用例同时满足）；均为 None 时跑全部。
+    name 可与 order / order_range / orders 组合（同时满足）；order、order_range、orders
+    三者只能传其一；均为 None 时跑全部。
     """
     from busybox import discover_loaded_tests
 
+    order_set = frozenset(orders) if orders is not None else None
     suite: List[Runnable] = []
     for spec, run_fn in discover_loaded_tests():
         if name is not None and spec.get("name") != name:
             continue
-        if order is not None and int(spec.get("order", -1)) != order:
+        o = int(spec.get("order", -1))
+        if order is not None and o != order:
+            continue
+        if order_range is not None:
+            lo, hi = order_range
+            if not (lo <= o <= hi):
+                continue
+        if order_set is not None and o not in order_set:
             continue
         if run_fn is not None:
             suite.append(CustomTest(spec, run_fn))
@@ -110,7 +168,29 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         dest="order",
         help="只跑一个用例：与 TEST 字典中 order 一致，例如 57",
     )
-    return p.parse_args(argv)
+    p.add_argument(
+        "--order-range",
+        type=parse_order_range,
+        metavar="START-END",
+        dest="order_range",
+        help="只跑 order 在闭区间内的用例，例如 1-13",
+    )
+    p.add_argument(
+        "--orders",
+        type=parse_orders,
+        metavar="N,N,...",
+        dest="orders",
+        help="只跑列出的 order，逗号分隔，例如 1,4,6,19；也支持 [1,4,6,19]（须加引号）",
+    )
+    args = p.parse_args(argv)
+    n = sum(
+        1
+        for x in (args.order, args.order_range, args.orders)
+        if x is not None
+    )
+    if n > 1:
+        p.error("--order、--order-range、--orders 只能任选其一")
+    return args
 
 
 def save_output_to_file(
@@ -119,15 +199,20 @@ def save_output_to_file(
     test_name: str,
     session_dir: str,
     raw_transcript: Optional[str] = None,
+    order: Optional[int] = None,
 ) -> str:
     """将命令输出保存到本次会话目录下的文件，返回文件路径（文件名不含时间戳）。
 
     raw_transcript: send_cmd 收到的串口原文（含 starry:~# 与回显），便于与手动交互对照；
     output: 供子串断言的处理后文本（可能与原文在首行去重等方面不同）。
+    order: 与 busybox TEST['order'] 一致，便于按序号检索日志。
     """
     filename = f"{safe_filename(test_name)}.log"
     filepath = os.path.join(session_dir, filename)
     with open(filepath, "w", encoding="utf-8") as f:
+        if order is not None:
+            f.write(f"Order: {order}\n")
+        f.write(f"Test: {test_name}\n")
         f.write(f"Command: {cmd}\n")
         f.write(f"Timestamp: {datetime.now().isoformat()}\n")
         f.write("=" * 60 + "\n")
@@ -165,17 +250,26 @@ def run_tests(client: QemuSerialClient, tests: List[Runnable], session_dir: str)
     passed = 0
     failed = 0
     for test in tests:
-        logger.info(f"Running test: {test.name} -> {test.cmd}")
+        ord_n = runnable_order(test)
+        ord_tag = f"[order {ord_n}] " if ord_n is not None else ""
+        logger.info(f"Running test: {ord_tag}{test.name} -> {test.cmd}")
         client.begin_test_capture()
         ok, msg, output = test.run(client)
         raw_ts = client.get_serial_transcript_for_log()
-        save_output_to_file(test.cmd, output, test.name, session_dir, raw_transcript=raw_ts)
+        save_output_to_file(
+            test.cmd,
+            output,
+            test.name,
+            session_dir,
+            raw_transcript=raw_ts,
+            order=ord_n,
+        )
         client.begin_test_capture()
         if ok:
-            logger.info(f"✅ PASS: {test.name} - {msg}")
+            logger.info(f"✅ PASS: {ord_tag}{test.name} - {msg}")
             passed += 1
         else:
-            logger.error(f"❌ FAIL: {test.name} - {msg}")
+            logger.error(f"❌ FAIL: {ord_tag}{test.name} - {msg}")
             failed += 1
         client.recover_shell()
         run_test_cleanup(client, test)
@@ -195,18 +289,39 @@ def main(argv: Optional[List[str]] = None) -> None:
     suite = load_test_suite(
         name=args.test_name,
         order=args.order,
+        order_range=args.order_range,
+        orders=args.orders,
     )
-    if args.test_name is not None or args.order is not None:
+    filtered = (
+        args.test_name is not None
+        or args.order is not None
+        or args.order_range is not None
+        or args.orders is not None
+    )
+    if filtered:
         if not suite:
             logger.error(
-                "No test matches the filter (--test / --order). "
+                "No test matches the filter (--test / --order / --order-range / --orders). "
                 "Check busybox/test_*.py TEST['name'] and TEST['order']."
             )
             _detach_session_report_log(report_fh)
             sys.exit(1)
-        logger.info(
-            f"Single-test mode: name={args.test_name!r} order={args.order!r} -> {len(suite)} case(s)"
-        )
+        if args.order_range is not None:
+            lo, hi = args.order_range
+            logger.info(
+                f"Order-range mode: {lo}-{hi} (inclusive), name={args.test_name!r} "
+                f"-> {len(suite)} case(s)"
+            )
+        elif args.orders is not None:
+            logger.info(
+                f"Orders list mode: {list(args.orders)}, name={args.test_name!r} "
+                f"-> {len(suite)} case(s)"
+            )
+        else:
+            logger.info(
+                f"Single-test mode: name={args.test_name!r} order={args.order!r} "
+                f"-> {len(suite)} case(s)"
+            )
     if not suite:
         logger.warning("No tests discovered under busybox/; add busybox/test_*.py with TEST dict.")
     client = QemuSerialClient(host=SERIAL_HOST, port=4444, timeout=1.0)
