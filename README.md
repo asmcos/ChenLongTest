@@ -8,7 +8,7 @@ StarryOS 相关自动化测试与 QEMU 启动说明。
 
 ```bash
 qemu-system-riscv64 -m 1G -smp 1 -machine virt -bios default \
-  -kernel /media/blx/sda2/StarryOS/StarryOS_riscv64-qemu-virt.bin \
+  -kernel StarryOS_riscv64-qemu-virt.bin \
   -device virtio-blk-pci,drive=disk0 \
   -drive id=disk0,if=none,format=raw,file=make/disk.img \
   -device virtio-net-pci,netdev=net0 \
